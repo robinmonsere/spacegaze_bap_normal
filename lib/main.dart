@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'models/Launch.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -61,7 +63,29 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Data is received
                   List<Launch>? upcomingLaunches = snapshot.data;
                   if (upcomingLaunches != null && upcomingLaunches.isNotEmpty) {
-                    return upcomingLaunch(upcomingLaunches.first);
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            upcomingLaunches.first.mission!.name ??
+                                "no name provided",
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold)),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        const Row(
+                          children: [
+                            Text("More info", style: TextStyle(fontSize: 20)),
+                            Icon(Icons.arrow_forward_ios),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        LaunchCountdown(launch: upcomingLaunches.first),
+                      ],
+                    );
                   } else {
                     return const Text("No upcoming launches found");
                   }
@@ -127,11 +151,69 @@ class _MyHomePageState extends State<MyHomePage> {
                         controller: _previousScrollController,
                         reverse: true,
                         scrollDirection: Axis.horizontal,
-                        itemCount: launches.length,
+                        itemCount: previousLaunches.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.only(right: 8.0),
-                            child: launchBlock(launches[index]),
+                            child: GestureDetector(
+                              onTap: () {
+                                context.go("/launch");
+                                //context.goNamed("/launch/${launch.id}");
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            previousLaunches[index].image ??
+                                                ""),
+                                        fit: BoxFit.cover),
+                                    border: Border.all(
+                                        color: const Color(0xFF4D54F0)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20))),
+                                width: 250,
+                                height: 150,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          previousLaunches[index]
+                                                  .mission!
+                                                  .name ??
+                                              "no name provided",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium),
+                                      Text(previousLaunches[index].lsp?.name ??
+                                          ""),
+                                      Spacer(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(formatDateToDayMonth(
+                                                  launch.net)),
+                                              Text(formatDateToHourMinute(
+                                                  launch.net))
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           );
                         },
                       ),
