@@ -26,15 +26,20 @@ class SpaceGazeTheme {
           ),
           headlineMedium: const TextStyle(
             fontSize: 24, // Set your desired font size here
-            color: ColorConstants.accentColor,
+            color: ColorConstants.white,
             fontWeight: FontWeight.w700,
           ),
           headlineSmall: const TextStyle(
             fontSize: 14, // Set your desired font size here
-            color: ColorConstants.accentColor,
+            color: ColorConstants.white,
           ),
           bodyMedium: const TextStyle(
             fontWeight: FontWeight.bold,
+            //color: ColorConstants.accentColor
+          ),
+          bodySmall: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
             //color: ColorConstants.accentColor
           ),
         ),

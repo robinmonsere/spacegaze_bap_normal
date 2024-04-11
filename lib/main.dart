@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:spacegaze_bap_normal/pages/singleLaunchPage.dart';
 import 'package:spacegaze_bap_normal/theme/color.dart';
 import 'package:spacegaze_bap_normal/theme/theme.dart';
 
@@ -43,9 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
   final StreamController<List<Launch>> _upcomingLaunchesController =
       StreamController.broadcast();
 
-  Stream<List<Launch>>? upcomingLaunchesStream;
-  Stream<List<Launch>>? previousLaunchesStream;
-
   Timer? _timer;
   int _currentPageIndex = 0;
   Duration _countdownDuration = const Duration();
@@ -54,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _baseUrl = "https://lldev.thespacedevs.com/2.0.0/launch";
 
   Future<List<Launch>> fetchAndUpdatePreviousLaunches() async {
+    return List<Launch>.empty();
     print("previous");
     final url = Uri.parse('$_baseUrl/previous?limit=5&offset=0&mode=normal');
     print(url);
@@ -72,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<Launch>> fetchAndUpdateUpcomingLaunches() async {
+    return List<Launch>.empty();
     final url = Uri.parse('$_baseUrl/upcoming?limit=5&offset=0&mode=normal');
     final response = await http.get(url);
 
@@ -136,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     print("Waiting");
                     print(snapshot.data);
                     // Show loader while waiting for data
-                    return const CircularProgressIndicator();
+                    return const Center(child: CircularProgressIndicator());
                   }
                   if (snapshot.hasError) {
                     // Show error if any
@@ -189,8 +189,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show loader while waiting for data
-                    return SizedBox(
-                        height: 150, child: const CircularProgressIndicator());
+                    return const SizedBox(
+                        height: 150,
+                        child: Center(child: CircularProgressIndicator()));
                   }
                   if (snapshot.hasError) {
                     // Show error if any
@@ -212,9 +213,14 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.only(right: 8.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  // context.go("/launch");
-                                  print("Tapped");
-                                  //context.goNamed("/launch/${launch.id}");
+                                  Launch launch =
+                                      upcomingLaunches.sublist(1)[index];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SingleLaunchPage(),
+                                    ),
+                                  );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -303,8 +309,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     // Show loader while waiting for data
-                    return SizedBox(
-                        height: 150, child: const CircularProgressIndicator());
+                    return const SizedBox(
+                        height: 150,
+                        child: Center(child: CircularProgressIndicator()));
                   }
                   if (snapshot.hasError) {
                     // Show error if any
