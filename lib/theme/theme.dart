@@ -38,8 +38,8 @@ class SpaceGazeTheme {
             //color: ColorConstants.accentColor
           ),
         ),
-    splashColor: Colors.transparent,
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      enableFeedback: false,
       selectedItemColor: ColorConstants
           .accentColor, // Using the same red color for selected items
     ),
