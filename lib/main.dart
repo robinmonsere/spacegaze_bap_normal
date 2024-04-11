@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:spacegaze_bap_normal/theme/theme.dart';
+
+import 'helper.dart';
 import 'models/Launch.dart';
 
 void main() {
@@ -14,10 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter No Clean Architecture Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: SpaceGazeTheme.darkTheme,
       home: const MyHomePage(),
     );
   }
@@ -36,6 +37,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Stream<List<Launch>>? upcomingLaunchesStream;
   Stream<List<Launch>>? previousLaunchesStream;
+
+  Timer? _timer;
+  Duration _countdownDuration = Duration();
+
+  void _updateCountdown(DateTime launchDate) {
+    setState(() {
+      final now = DateTime.now();
+      if (launchDate.isAfter(now)) {
+        _countdownDuration = launchDate.difference(now);
+      } else {
+        _countdownDuration = Duration.zero;
+        _timer?.cancel(); // Stop the timer if the date has passed
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //_startTimer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         const SizedBox(
                           height: 5,
                         ),
-                        LaunchCountdown(launch: upcomingLaunches.first),
+                        // LaunchCountdown(launch: upcomingLaunches.first),
                       ],
                     );
                   } else {
@@ -115,7 +137,88 @@ class _MyHomePageState extends State<MyHomePage> {
                   // Data is received
                   List<Launch>? upcomingLaunches = snapshot.data;
                   if (upcomingLaunches != null && upcomingLaunches.isNotEmpty) {
-                    return scheduledLaunchesWidget(upcomingLaunches.sublist(1));
+                    return SizedBox(
+                      height: 150,
+                      child: ListView.builder(
+                        controller: _upcomingScrollController,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: upcomingLaunches.sublist(1).length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                // context.go("/launch");
+                                print("Tapped");
+                                //context.goNamed("/launch/${launch.id}");
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    image: DecorationImage(
+                                        image: NetworkImage(upcomingLaunches
+                                                .sublist(1)[index]
+                                                .image ??
+                                            ""),
+                                        fit: BoxFit.cover),
+                                    border: Border.all(
+                                        color: const Color(0xFF4D54F0)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20))),
+                                width: 250,
+                                height: 150,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 8),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          upcomingLaunches
+                                                  .sublist(1)[index]
+                                                  .mission!
+                                                  .name ??
+                                              "no name provided",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium),
+                                      Text(upcomingLaunches
+                                              .sublist(1)[index]
+                                              .lsp
+                                              ?.name ??
+                                          ""),
+                                      Spacer(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              Text(formatDateToDayMonth(
+                                                  upcomingLaunches
+                                                      .sublist(1)[index]
+                                                      .net)),
+                                              Text(formatDateToHourMinute(
+                                                  upcomingLaunches
+                                                      .sublist(1)[index]
+                                                      .net))
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
                   } else {
                     return const Text("No upcoming launches found");
                   }
@@ -157,7 +260,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             padding: const EdgeInsets.only(right: 8.0),
                             child: GestureDetector(
                               onTap: () {
-                                context.go("/launch");
+                                //context.go("/launch");
+                                print("Tapped");
                                 //context.goNamed("/launch/${launch.id}");
                               },
                               child: Container(
@@ -202,9 +306,9 @@ class _MyHomePageState extends State<MyHomePage> {
                                                 CrossAxisAlignment.end,
                                             children: [
                                               Text(formatDateToDayMonth(
-                                                  launch.net)),
+                                                  previousLaunches[index].net)),
                                               Text(formatDateToHourMinute(
-                                                  launch.net))
+                                                  previousLaunches[index].net))
                                             ],
                                           ),
                                         ],
