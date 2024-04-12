@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<List<Launch>> fetchAndUpdateUpcomingLaunches() async {
-    return List<Launch>.empty();
+    //return List<Launch>.empty();
     final url = Uri.parse('$_baseUrl/upcoming?limit=5&offset=0&mode=normal');
     final response = await http.get(url);
 

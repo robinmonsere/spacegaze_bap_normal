@@ -33,14 +33,19 @@ class SpaceGazeTheme {
             fontSize: 14, // Set your desired font size here
             color: ColorConstants.white,
           ),
-          bodyMedium: const TextStyle(
+          bodyLarge: const TextStyle(
             fontWeight: FontWeight.bold,
-            //color: ColorConstants.accentColor
+            fontSize: 24,
+            color: ColorConstants.white,
+          ),
+          bodyMedium: const TextStyle(
+            fontWeight: FontWeight.normal,
+            color: ColorConstants.white,
           ),
           bodySmall: const TextStyle(
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal,
             fontSize: 14,
-            //color: ColorConstants.accentColor
+            color: ColorConstants.onSurfaceGray,
           ),
         ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(

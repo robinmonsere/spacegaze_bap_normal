@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spacegaze_bap_normal/theme/color.dart';
 
 import '../models/Launch.dart';
 
@@ -8,12 +9,11 @@ class SingleLaunchPage extends StatelessWidget {
 
   final Launch launch = Launch(
     id: '1',
-    name: 'Falcon 9',
+    name: 'Starlink Group 6-22',
     net: '2024-10-12T18:26:00Z',
     status: LaunchStatus(
         name: 'Scheduled', abbrev: 'TBD', description: 'On Schedule'),
-    rocket:
-        Rocket(configuration: RocketConfiguration(name: 'Starlink Group 6-22')),
+    rocket: Rocket(configuration: RocketConfiguration(name: 'Falcon 9')),
     mission: Mission(
         name: 'Starlink Mission Group 6-22',
         description: 'Deployment of satellites into orbit'),
@@ -47,90 +47,93 @@ class SingleLaunchPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               ),
-              Text(launch.name,
+              Text(launch.rocket.configuration?.name ?? "",
                   style: Theme.of(context).textTheme.headlineLarge),
             ],
           ),
         ),
-        Row(
-          children: [
-            Text(launch.mission!.name ?? "",
-                style: Theme.of(context).textTheme.headlineMedium),
-          ],
-        ),
-        if (imageUrl != null)
-          Image.network(
-            imageUrl,
-            height: 250,
-            fit: BoxFit.cover,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Text(launch.mission!.name ?? "",
+                  style: Theme.of(context).textTheme.headlineMedium),
+            ],
           ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
+        ),
+
+        if (imageUrl != null)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                imageUrl,
+                height: 250,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: ColorConstants.surfaceGray,
+            ),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                LaunchDetailInfo(
-                    title: "Time", value: launch.net.substring(0, 10)),
-                LaunchDetailInfo(
-                    title: "Date", value: launch.net.substring(11, 16)),
-                LaunchDetailInfo(
-                    title: "Status", value: launch.status?.abbrev ?? ""),
-              ],
-            ),
-            SizedBox(height: 16),
-            const SizedBox(height: 16),
-            Column(
-              children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Text("Add to Calendar",
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const Icon(Icons.calendar_today, color: Colors.white),
+                    LaunchDetailInfo(
+                        title: "Time", value: launch.net.substring(11, 16)),
+                    LaunchDetailInfo(
+                        title: "Date", value: launch.net.substring(5, 10)),
+                    LaunchDetailInfo(
+                        title: "Status", value: launch.status?.abbrev ?? ""),
                   ],
                 ),
                 const SizedBox(height: 16),
-                Text("pad", style: Theme.of(context).textTheme.bodySmall),
-                Text(launch.pad?.name ?? "",
-                    style: Theme.of(context).textTheme.bodyLarge),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Column(
                   children: [
-                    Text("View pad location",
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    const Icon(Icons.location_on, color: Colors.white),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Add to Calendar",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        const Icon(Icons.calendar_today, color: Colors.white),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text("pad", style: Theme.of(context).textTheme.bodySmall),
+                    Text(launch.pad?.name ?? "",
+                        style: Theme.of(context).textTheme.bodyLarge),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("View pad location",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        const Icon(Icons.location_on, color: Colors.white),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text("Lsp" ?? "",
+                        style: Theme.of(context).textTheme.bodySmall),
+                    Text(
+                      launch.lsp?.name ?? "",
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ],
-                )
+                ),
               ],
             ),
-          ],
+          ),
         ),
-      ],
-    );
-  }
-}
-
-// A reusable row widget for launch details
-class LaunchDetailRow extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const LaunchDetailRow({
-    Key? key,
-    required this.title,
-    required this.value,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        Text(value, style: TextStyle(color: Colors.white)),
       ],
     );
   }
@@ -142,26 +145,18 @@ class LaunchDetailInfo extends StatelessWidget {
   final String value;
 
   const LaunchDetailInfo({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(title,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold)),
-        Text(value,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold)),
+        Text(title, style: Theme.of(context).textTheme.bodySmall),
+        Text(value, style: Theme.of(context).textTheme.bodyLarge),
       ],
     );
   }
