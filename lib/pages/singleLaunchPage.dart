@@ -5,30 +5,13 @@ import '../models/Launch.dart';
 
 class SingleLaunchPage extends StatelessWidget {
   // SingleLaunchPage({super.key, required this.launch2});
-  SingleLaunchPage({Key? key}) : super(key: key);
+  SingleLaunchPage({super.key, required this.launch});
 
-  final Launch launch = Launch(
-    id: '1',
-    name: 'Starlink Group 6-22',
-    net: '2024-10-12T18:26:00Z',
-    status: LaunchStatus(
-        name: 'Scheduled', abbrev: 'TBD', description: 'On Schedule'),
-    rocket: Rocket(configuration: RocketConfiguration(name: 'Falcon 9')),
-    mission: Mission(
-        name: 'Starlink Mission Group 6-22',
-        description: 'Deployment of satellites into orbit'),
-    pad: Pad(
-      name: 'Space Launch Complex 40',
-      mapUrl: 'https://www.example.com',
-      location: Location(name: 'Cape Canaveral'),
-    ),
-    lsp: LaunchServiceProvider(name: 'SpaceX'),
-    image:
-        "https://spacelaunchnow-prod-east.nyc3.digitaloceanspaces.com/media/images/falcon_9_image_20230807133459.jpeg",
-  );
+  Launch launch;
 
   @override
   Widget build(BuildContext context) {
+    print(launch.status?.name);
     final String? imageUrl = launch.image;
     return Column(
       children: [
@@ -47,8 +30,13 @@ class SingleLaunchPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
               ),
-              Text(launch.rocket.configuration?.name ?? "",
-                  style: Theme.of(context).textTheme.headlineLarge),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(launch.rocket.configuration?.name ?? "",
+                      style: Theme.of(context).textTheme.headlineLarge),
+                ),
+              ),
             ],
           ),
         ),
@@ -56,8 +44,11 @@ class SingleLaunchPage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              Text(launch.mission!.name ?? "",
-                  style: Theme.of(context).textTheme.headlineMedium),
+              Flexible(
+                child: Text(launch.mission!.name ?? "",
+                    style: Theme.of(context).textTheme.headlineMedium),
+              ),
+              Icon(Icons.expand_more_rounded, color: Colors.white),
             ],
           ),
         ),
@@ -95,7 +86,7 @@ class SingleLaunchPage extends StatelessWidget {
                     LaunchDetailInfo(
                         title: "Date", value: launch.net.substring(5, 10)),
                     LaunchDetailInfo(
-                        title: "Status", value: launch.status?.abbrev ?? ""),
+                        title: "Status", value: launch.status?.abbrev ?? "/"),
                   ],
                 ),
                 const SizedBox(height: 16),

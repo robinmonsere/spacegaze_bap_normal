@@ -49,10 +49,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Duration _countdownDuration = const Duration();
 
   final int _limit = 3;
-  final _baseUrl = "https://lldev.thespacedevs.com/2.0.0/launch";
+  final _baseUrl = "https://lldev.thespacedevs.com/2.2.0/launch";
 
   Future<List<Launch>> fetchAndUpdatePreviousLaunches() async {
-    return List<Launch>.empty();
+    //return List<Launch>.empty();
     print("previous");
     final url = Uri.parse('$_baseUrl/previous?limit=5&offset=0&mode=normal');
     print(url);
@@ -158,11 +158,23 @@ class _MyHomePageState extends State<MyHomePage> {
                           const SizedBox(
                             height: 5,
                           ),
-                          const Row(
-                            children: [
-                              Text("More info", style: TextStyle(fontSize: 20)),
-                              Icon(Icons.arrow_forward_ios),
-                            ],
+                          GestureDetector(
+                            child: const Row(
+                              children: [
+                                Text("More info",
+                                    style: TextStyle(fontSize: 20)),
+                                Icon(Icons.arrow_forward_ios),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SingleLaunchPage(
+                                      launch: upcomingLaunches.first),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(
                             height: 5,
@@ -218,7 +230,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SingleLaunchPage(),
+                                      builder: (context) =>
+                                          SingleLaunchPage(launch: launch),
                                     ),
                                   );
                                 },
@@ -334,9 +347,14 @@ class _MyHomePageState extends State<MyHomePage> {
                               padding: const EdgeInsets.only(right: 8.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  //context.go("/launch");
-                                  print("Tapped");
-                                  //context.goNamed("/launch/${launch.id}");
+                                  Launch launch = previousLaunches[index];
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          SingleLaunchPage(launch: launch),
+                                    ),
+                                  );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

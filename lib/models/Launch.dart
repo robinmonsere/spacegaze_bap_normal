@@ -33,6 +33,7 @@ class Launch {
       this.image});
 
   factory Launch.fromJson(Map<String, dynamic> json) {
+    print(json);
     return Launch(
       id: json['id'],
       name: json['name'],
@@ -60,6 +61,7 @@ class LaunchStatus {
       {required this.name, required this.abbrev, required this.description});
 
   factory LaunchStatus.fromJson(Map<String, dynamic> json) {
+    print(json);
     return LaunchStatus(
       name: json['name'],
       abbrev: json['abbrev'],
